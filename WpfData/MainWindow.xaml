@@ -1,0 +1,8 @@
+﻿<Window x:Class="WpfData.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Soft Express Crud" Height="350" Width="800">
+    <Grid>
+        <Frame Source="/Views/PeopleView.xaml" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" NavigationUIVisibility="Hidden"/>
+    </Grid>
+</Window>
