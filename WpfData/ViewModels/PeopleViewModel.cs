@@ -147,8 +147,8 @@ namespace WpfData.ViewModels
             get { return isMale; }
             set
             {
-                isMale = true;
-                Gender = 'M';
+                isMale = value;
+                //Gender = 'M';
                 NotifyPropertyChanged(m => m.IsMale);
             }
         }
@@ -158,7 +158,7 @@ namespace WpfData.ViewModels
             set
             {
                 isFemale = value;
-                Gender = 'F';
+                //Gender = 'F';
                 NotifyPropertyChanged(m => m.IsFemale);
             }
         }
@@ -208,32 +208,31 @@ namespace WpfData.ViewModels
         }
         private void AddPerson()
         {
-            //if(this.SelectedPerson.Mode == emMode.update)
-            //{
-            //    this.SelectedPerson.FirstName = this.FirstName;
-            //    this.SelectedPerson.LastName = this.LastName;
-            //    this.SelectedPerson.Birthplace = this.Birthplace;
-            //    this.SelectedPerson.Birthdate = this.Birthdate;
-            //    this.SelectedPerson.Employed = this.Employed;
-            //    this.SelectedPerson.Phone = this.Phone;
-            //    if (this.SelectedPerson.Gender == 'M')
-            //        this.IsMale = true;
-            //    else
-            //        this.IsFemale = true;
 
-            //    this.SelectedPerson.MartialStatus = this.MartialStatus;
-            //    _serviceAgent.Flush(this.People, (error) => PeopleFlushed(error));
-            //} else
-            //{            Message = "";
             Boolean isValid = ValidateInput();
             if(isValid && UserId == 0)
             {
+                if(IsMale)
+                {
+                    this.Gender = 'M';
+                } else if(this.IsFemale)
+                {
+                    this.Gender = 'F';
+                }
                 this.People.Insert(0, new Person { FirstName = FirstName, LastName = LastName, Birthdate = Birthdate, Birthplace = Birthplace, Gender = Gender, Phone = Phone, MartialStatus = MartialStatus, Employed = Employed });
                 _serviceAgent.Flush(this.People, (error) => PeopleFlushed(error));
                 Message = "";
                 this.CloseWindow();
             } else if(isValid)
             {
+                if (IsMale)
+                {
+                    this.Gender = 'M';
+                }
+                else if (this.IsFemale)
+                {
+                    this.Gender = 'F';
+                }
                 Person person = new Person { Mode = emMode.update, UserId = this.UserId, FirstName = FirstName, LastName = LastName, Birthdate = Birthdate, Birthplace = Birthplace, Gender = Gender, Phone = Phone, MartialStatus = MartialStatus, Employed = Employed };
                 var found = People.FirstOrDefault(x => x.UserId == this.UserId);
                 int i = People.IndexOf(found);
@@ -241,8 +240,6 @@ namespace WpfData.ViewModels
                 _serviceAgent.Flush(this.People, (error) => PeopleFlushed(error));
                 this.CloseWindow();
             }
-
-            //}
 
         }
 
@@ -268,14 +265,13 @@ namespace WpfData.ViewModels
             this.Phone = this.SelectedPerson.Phone;
             if (this.SelectedPerson.Gender == 'M')
                 this.IsMale = true;
-            else
+            else if (this.SelectedPerson.Gender == 'F')
                 this.IsFemale = true;
 
             this.MartialStatus = this.SelectedPerson.MartialStatus;
 
             this.SelectedPerson.Mode = emMode.update;
             Message = "";
-            //_serviceAgent.Flush(this.People, (error) => PeopleFlushed(error));
         }
 
         private Boolean ValidateInput()
@@ -308,6 +304,11 @@ namespace WpfData.ViewModels
             if(!this.isMale && !isFemale)
             {
                 Message = "Zgjidhni gjinin";
+                return false;
+            }            
+            if(this.MartialStatus.Equals(""))
+            {
+                Message = "Zgjidhni Gjendjen martesore";
                 return false;
             }
 
@@ -381,6 +382,8 @@ namespace WpfData.ViewModels
                 this.Phone = "";
                 this.Birthdate = DateTime.Now;
                 this.Employed = false;
+                this.IsFemale = false;
+                this.IsMale = false;
                 this.MartialStatus = "";
                 this.UserId = 0;
                 if (addCommand == null)
